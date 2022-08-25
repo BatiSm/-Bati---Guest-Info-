@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin name="[ Bati - Guest Info ]" version_long="10000" version_human="1.0.0" author="Bati" website="https://batism.pl/" update_check="https://github.com/BatiSm"><hooks><hook type="S" class="\IPS\Theme\class_core_front_global" filename="Hook"><![CDATA[//<?php
+
+/* To prevent PHP errors (extending class does not exist) revealing path */
+if ( !\defined( '\IPS\SUITE_UNIQUE_KEY' ) )
+{
+	exit;
+}
+
+class hook36 extends _HOOK_CLASS_
+{
+
+/* !Hook Data - DO NOT REMOVE */
+public static function hookData() {
+ return array_merge_recursive( array (
+  'globalTemplate' => 
+  array (
+    0 => 
+    array (
+      'selector' => 'html > body.ipsApp',
+      'type' => 'add_inside_start',
+      'content' => '{{if \IPS\Member::loggedIn()->inGroup(\IPS\Settings::i()->guest_group)}}
+<div id="elGuestInfo" {{if \IPS\Settings::i()->bGuestInfo_Anim}} class="ipsE_Mover" {{endif}}>
+  <div class="ipsType_center">
+  	<h3 class="ipsType_reset">
+		{lang="bGuest_h2Title"}
+    </h3>
+    <p class="ipsType_reset">
+		{lang="bGuest_Desc"}
+    </p>
+    <ul class="ipsList_inline ipsType_center bGuestInfo_padding">
+      <li>
+        <a class="ipsButton ipsButton_important ipsButton_small" href=\'{url="app=core&module=system&controller=login" seoTemplate="login"}\'>{lang="login"}</a>
+      </li>
+      <li class="bGuestInfo_Li"></li>
+      <li>
+        <a class="ipsButton ipsButton_important ipsButton_small" href=\'{url="app=core&module=system&controller=register" seoTemplate="register"}\'>{lang="sign_up"}</a>
+      </li>
+    </ul>
+  </div>
+</div>
+{{endif}}',
+    ),
+  ),
+), parent::hookData() );
+}
+/* End Hook Data */
+
+
+}
+]]></hook></hooks><settings><setting><key>bGuestInfo_Anim</key><default>0</default></setting></settings><settingsCode><![CDATA[//<?php
+
+$form->addTab('Steam Group Info - Settings');
+$form->addHeader('General');
+$form->add( new \IPS\Helpers\Form\YesNo( 'bGuestInfo_Anim', \IPS\Settings::i()->bGuestInfo_Anim, FALSE, array( ) ) );
+
+
+if ( $values = $form->values() )
+{
+	$form->saveAsSettings();
+	return TRUE;
+}
+
+return $form;]]></settingsCode><widgets/><htmlFiles/><cssFiles><css filename="batiGuestInfo.css">OnJvb3QgewogIC0tZWxHdWVzdEluZm8tQ29sb3I6IDI1NSwgMjU1LCAyNTUsIDE7CiAgLS1lbEd1ZXN0SW5mby1CZzogMCwgMCwgMCwgMC40Owp9CiNlbEd1ZXN0SW5mbyB7CiAgcG9zaXRpb246IGZpeGVkOwogIHotaW5kZXg6IDk5OTk7CiAgbWluLXdpZHRoOiAyMy4yNXJlbTsKICBtYXgtd2lkdGg6IDIzLjI1cmVtOwogIHJpZ2h0OiAxLjdyZW07CiAgYm90dG9tOiAxLjdyZW07CiAgYm9yZGVyOiAycHggc29saWQgcmdiKCB2YXIoLS10aGVtZS1pbXBvcnRhbnRfYnV0dG9uKSwgLjggKTsKICBiYWNrZ3JvdW5kOiByZ2JhKCB2YXIoLS10aGVtZS1pbXBvcnRhbnRfYnV0dG9uKSwgLjMgKTsKICBjb2xvcjogcmdiKHZhcigtLXRoZW1lLXByaW1hcnlfYnV0dG9uX2ZvbnQpKTsKICBwYWRkaW5nOiAwLjlyZW07CiAgZm9udC13ZWlnaHQ6IDgwMDsKICBib3JkZXItcmFkaXVzOiAwLjRyZW07Cn0KLmlwc0VfTW92ZXIgewogIGFuaW1hdGlvbjogbW92ZXIgNC4ycyBlYXNlLWluLW91dCBpbmZpbml0ZTsKfQouYkd1ZXN0SW5mb19wYWRkaW5nIHsKICBwYWRkaW5nLXRvcDogMC41cmVtOwp9Ci5iR3Vlc3RJbmZvX0xpOjpiZWZvcmUgewogIGNvbnRlbnQ6ICcnOwogIGJvcmRlci1yYWRpdXM6IDAuNjI1cmVtOwogIG1hcmdpbi1yaWdodDogMC41cmVtOwogIG1hcmdpbi1ib3R0b206IC0wLjEyNXJlbTsKICB3aWR0aDogMC4ycmVtOwogIGhlaWdodDogMS4yOHJlbTsKICB0cmFuc2Zvcm06IHJvdGF0ZSgxNWRlZyk7CiAgYmFja2dyb3VuZDogbGluZWFyLWdyYWRpZW50KAogICAgOTBkZWcsCiAgICByZ2JhKHZhcigtLXRoZW1lLXByaW1hcnlfYnV0dG9uX2ZvbnQpLCAwLjUpIDAlLAogICAgcmdiYSh2YXIoLS10aGVtZS1wcmltYXJ5X2J1dHRvbl9mb250KSwgMC45KSAxMDAlCiAgKTsKICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7Cn0KQG1lZGlhIHNjcmVlbiBhbmQgKG1heC13aWR0aDogOTc5cHgpIHsKICAjZWxHdWVzdEluZm8gewogICAgei1pbmRleDogLTEgIWltcG9ydGFudDsKICAgIG9wYWNpdHk6IDAgIWltcG9ydGFudDsKICB9Cn0KQGtleWZyYW1lcyBtb3ZlciB7CiAgMCUgewogICAgYm94LXNoYWRvdzogMCA1cHggMTVweCAwcHggcmdiYSgwLCAwLCAwLCAwLjYpOwogICAgdHJhbnNmb3JtOiB0cmFuc2xhdGV5KDBweCk7CiAgfQogIDUwJSB7CiAgICBib3gtc2hhZG93OiAwIDI1cHggMTVweCAwcHggcmdiYSgwLCAwLCAwLCAwLjIpOwogICAgdHJhbnNmb3JtOiB0cmFuc2xhdGV5KC0wLjE4OHJlbSk7CiAgfQogIDEwMCUgewogICAgYm94LXNoYWRvdzogMCA1cHggMTVweCAwcHggcmdiYSgwLCAwLCAwLCAwLjYpOwogICAgdHJhbnNmb3JtOiB0cmFuc2xhdGV5KDBweCk7CiAgfQp9Cg==</css></cssFiles><jsFiles/><resourcesFiles/><lang><word key="bGuest_h2Title" js="0">Hello! You are currently a guest.</word><word key="bGuest_Desc" js="0">Log in to access the forum! If you do not have an account with us, please register by clicking the button below.</word></lang><versions><version long="10000" human="1.0.0"/></versions></plugin>
